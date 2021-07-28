@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
+import 'package:notion_api_test/view_model/create_view_model.dart';
 import 'package:notion_api_test/view_model/todo_view_model.dart';
 import 'package:notion_api_test/ui/calender_page/calender_page.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ void main() async {
       providers: [
     ChangeNotifierProvider(create: (_) => TodoViewModel()),
     ChangeNotifierProvider(create: (_) => CalenderViewModel()),
+    ChangeNotifierProvider(create: (_) => CreateViewModel()),
       ],
   child: MyApp(),),
   );

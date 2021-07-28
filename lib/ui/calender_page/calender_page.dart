@@ -4,6 +4,7 @@ import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.
 import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.dart';
 import 'package:intl/intl.dart';
 import 'package:notion_api_test/model/failure_model.dart';
+import 'package:notion_api_test/ui/create_page/create_page.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -77,9 +78,16 @@ class _CalenderPageState extends State<CalenderPage> {
                 )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CreatePage()));
-          viewModel.upload('테스트', '완료', 'green', DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day), null, '테스트완료');
-        },
+          Future<DateTime?> selectedDate = showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030));
+          selectedDate.then((value) {
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CreatePage(value!)));
+          });
+
+          },
         child: Icon(Icons.add_circle),
       ),
     );

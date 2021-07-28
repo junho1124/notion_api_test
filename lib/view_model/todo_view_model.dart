@@ -4,8 +4,4 @@ import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.da
 
 class TodoViewModel extends ChangeNotifier {
 
-
-
-
-
 }

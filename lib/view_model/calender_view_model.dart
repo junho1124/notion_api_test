@@ -32,21 +32,6 @@ class CalenderViewModel extends ChangeNotifier {
     _isLoaded = true;
     return resultMap;
   }
-  void upload(String detail, String status, String color, DateTime startTime, DateTime? endTime, String name) async {
-    String start = DateFormat("yyyy-MM-dd").format(startTime);
-    String end;
-    if(endTime != null) {
-      end = DateFormat("yyyy-MM-dd").format(endTime);
-    } else {
-      end = "null";
-    }
-    print('출력은 $start');
-    print('출력은 $end');
-    await DataRepository().createTodoItems(detail, status, color, start, end, name);
-    notifyListeners();
-  }
-
-
 
   bool _isTabbed = true;
 
