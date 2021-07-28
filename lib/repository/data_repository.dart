@@ -26,7 +26,7 @@ class DataRepository {
         Uri.parse(url),
         headers: {
           HttpHeaders.authorizationHeader:
-          'Bearer ${dotenv.env['NOTION_API_KEY']}',
+              'Bearer ${dotenv.env['NOTION_API_KEY']}',
           'Notion-Version': '2021-05-13'
         },
       );
@@ -42,59 +42,102 @@ class DataRepository {
       throw const Failure(message: '데이터 전송 오류');
     }
   }
-
-  Future<void> createTodoItems(String pageUrl, String title, String status, String color, DateTime startTime, DateTime endTime, String name) async {
-    try {
-      final url =
-          '${_baseUrl}pages';
-      final response = await _client.post(
-        Uri.parse(url),
-        headers: {
-          HttpHeaders.authorizationHeader:
-          'Bearer ${dotenv.env['NOTION_API_KEY']}',
-          'Notion-Version': '2021-05-13'
-        },
-        body: {
-          'parent' : {'database_id' : '${dotenv.env['NOTION_DATABASE_ID']}'},
-          'properties' : {
-            'details' : {
-              'rich_text' : [
-                {
-                  'plain_text' : title
-                }
-              ]
-            },
-            'status' : {
-              'select' : {
-                'name' : status,
-                'color' : color
-              }
-            },
-            'deadline' : {
-              'date' : {
-                'start' : startTime,
-                'end' : endTime
-              }
-            },
-            'name' : {
-              'title' : [
-                {
-                  'plain_text' : name
-                }
-              ]
+  Future<void> createTodoItems(String detail, String status, String color, String startTime, String? endTime, String name) async {
+    Map<String, dynamic> body = {
+      "parent": {
+        "database_id": "33ba8e6b-2552-4cc1-b9c3-021acfc5349c"
+      },
+      "properties": {
+        "details": {
+          "id": ":>ca",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": detail,
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": detail,
+              "href": null
             }
+          ]
+        },
+        "status": {
+          "id": "SgUA",
+          "type": "select",
+          "select": {
+            "id": "3",
+            "name": status,
+            "color": color
           }
+        },
+        "deadline": {
+          "id": "|VoD",
+          "type": "date",
+          "date": {
+            "start": startTime,
+            "end": endTime
+          }
+        },
+        "name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": name,
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": name,
+              "href": null
+            }
+          ]
         }
-      );
-
+      }
+    };
+    print('$detail, $status, $color, $startTime, $endTime, $name');
+    try {
+      final url = '${_baseUrl}pages';
+      final response = await _client.post(Uri.parse(url),
+          headers: {
+            HttpHeaders.authorizationHeader:
+                'Bearer ${dotenv.env['NOTION_API_KEY']}',
+            HttpHeaders.connectionHeader : 'keep-alive',
+            HttpHeaders.acceptEncodingHeader : 'gzip, deflate, br',
+            HttpHeaders.acceptHeader : '*/*',
+            HttpHeaders.contentTypeHeader: 'application/json',
+            'Notion-Version': '2021-05-13'
+          },
+          body: body);
+      print('err 1');
       if (response.statusCode == 200) {
-          print('데이터 전송 완료');
+      print('err 2');
+        print('데이터 전송 완료');
       } else {
+        print('err 3');
         throw const Failure(message: '데이터 전송 오류');
       }
     } catch (_) {
-      throw const Failure(message: '데이터 전송 오류');
+      print('err 4');
+      throw const Failure(message: '데이터 전송 오류!!');
     }
   }
-
 }

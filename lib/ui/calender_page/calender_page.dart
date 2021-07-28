@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart'
     as Cal;
 import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.dart';
+import 'package:intl/intl.dart';
 import 'package:notion_api_test/model/failure_model.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
 import 'package:provider/provider.dart';
@@ -61,11 +62,6 @@ class _CalenderPageState extends State<CalenderPage> {
                             color: Colors.black,
                             fontWeight: FontWeight.w800,
                             fontSize: 11),
-                        onEventSelected: (event) {
-                          setState(() {
-                            viewModel.isTab();
-                          });
-                        },
                       );
                     } else if (snapshot.hasError) {
                       //에러 메세지 발생
@@ -79,6 +75,13 @@ class _CalenderPageState extends State<CalenderPage> {
                     );
                   },
                 )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CreatePage()));
+          viewModel.upload('테스트', '완료', 'green', DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day), null, '테스트완료');
+        },
+        child: Icon(Icons.add_circle),
+      ),
     );
   }
 
