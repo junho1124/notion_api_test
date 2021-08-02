@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:notion_api_test/model/data_model.dart';
 import 'package:notion_api_test/repository/data_repository.dart';
 import 'package:notion_api_test/model/failure_model.dart';
-
+import 'package:notion_api_test/view_model/todo_view_model.dart';
+import 'package:provider/provider.dart';
 import 'make_todo_card.dart';
 
 class TodoPage extends StatefulWidget {
@@ -13,16 +14,16 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  late Future<List<Data>> _futureTodoItems;
 
   @override
   void initState() {
-    _futureTodoItems = DataRepository().getTodoItems();
+    context.read<TodoViewModel>().fetch();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+  final viewModel = context.read<TodoViewModel>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -30,11 +31,11 @@ class _TodoPageState extends State<TodoPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          _futureTodoItems = DataRepository().getTodoItems();
+          viewModel.fetch();
           setState(() {});
         },
         child: FutureBuilder<List<Data>>(
-          future: _futureTodoItems,
+          future: viewModel.futureTodoItems,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               //리스트뷰 작성

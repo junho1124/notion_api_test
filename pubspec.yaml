@@ -32,6 +32,8 @@ dependencies:
   intl: ^0.17.0
   flutter_dotenv: ^5.0.0
   provider: ^5.0.0
+  collection: ^1.15.0
+  flutter_datetime_picker: ^1.5.1
   flutter_neat_and_clean_calendar: ^0.2.2+10
 
 dev_dependencies:

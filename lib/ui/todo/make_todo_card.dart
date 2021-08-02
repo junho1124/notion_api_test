@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notion_api_test/model/data_model.dart';
-import 'package:notion_api_test/ui/calender_page/calender_page.dart';
-
+import 'package:notion_api_test/view_model/todo_view_model.dart';
+import 'package:provider/provider.dart';
 import '../../util/get_status_color.dart';
 
-class MakeTodoCard extends StatelessWidget {
+class MakeTodoCard extends StatefulWidget {
   const MakeTodoCard({
     Key? key,
     required this.item,
@@ -14,7 +14,13 @@ class MakeTodoCard extends StatelessWidget {
   final Data item;
 
   @override
+  _MakeTodoCardState createState() => _MakeTodoCardState();
+}
+
+class _MakeTodoCardState extends State<MakeTodoCard> {
+  @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<TodoViewModel>();
     return Container(
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -22,7 +28,7 @@ class MakeTodoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         border: Border.all(
           width: 2.0,
-          color: getStatusColor(item.status),
+          color: getStatusColor(widget.item.status),
         ),
         boxShadow: const [
           BoxShadow(
@@ -33,20 +39,46 @@ class MakeTodoCard extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CalenderPage(item.startDate)));
+          showDialog(
+              context: context,
+            builder: (_) => AlertDialog(
+            title: Text('Todo 삭제'),
+            content: Text('이 할일을 삭제 하시겠습니까?'),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('취소')),
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                      viewModel.delete(widget.item.pageID);
+                      context.read<TodoViewModel>().fetch();
+                      Navigator.pop(context);
+                      });
+                    },
+                    child: Text('삭제'))
+              ],
+            )
+          );
         },
-        title: Text(item.name),
+        title: Text(widget.item.name),
         subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                '${item.status} • ${DateFormat.yMEd().format(item.startDate)}'
+                '${widget.item.status}'
             ),
             Text(
-                '${item.status} • ${DateFormat.yMEd().format(item.endDate)}'
+                'Start • ${DateFormat.yMEd().format(widget.item.startDate)}'
+            ),
+            Text(
+                'End • ${DateFormat.yMEd().format(widget.item.endDate)}'
             ),
           ],
         ),
-        trailing: Text(item.details),
+        trailing: Text(widget.item.details),
       ),
     );
   }
