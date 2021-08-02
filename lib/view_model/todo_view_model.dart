@@ -11,6 +11,7 @@ class TodoViewModel extends ChangeNotifier {
 
   void fetch() {
     _futureTodoItems = DataRepository().getTodoItems();
+    notifyListeners();
   }
 
   final repository = DeleteRepository();

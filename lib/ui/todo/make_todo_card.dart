@@ -38,30 +38,30 @@ class _MakeTodoCardState extends State<MakeTodoCard> {
         ],
       ),
       child: ListTile(
-        onTap: () {
-          showDialog(
+        onTap: () async {
+          await showDialog(
               context: context,
-            builder: (_) => AlertDialog(
-            title: Text('Todo 삭제'),
-            content: Text('이 할일을 삭제 하시겠습니까?'),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('취소')),
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                      viewModel.delete(widget.item.pageID);
-                      context.read<TodoViewModel>().fetch();
-                      Navigator.pop(context);
-                      });
-                    },
-                    child: Text('삭제'))
-              ],
-            )
-          );
+            builder: (_) {
+                    return AlertDialog(
+                      title: Text('Todo 삭제'),
+                      content: Text('이 할일을 삭제 하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('취소')),
+                        TextButton(
+                            onPressed: () {
+                                viewModel.delete(widget.item.pageID);
+                                Navigator.pop(context);
+                            },
+                            child: Text('삭제'))
+                      ],
+                    );
+                  });
+          context.read<TodoViewModel>().fetch();
+          setState(() {});
         },
         title: Text(widget.item.name),
         subtitle: Column(

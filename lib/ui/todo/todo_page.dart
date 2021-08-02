@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:notion_api_test/model/data_model.dart';
-import 'package:notion_api_test/repository/data_repository.dart';
 import 'package:notion_api_test/model/failure_model.dart';
 import 'package:notion_api_test/view_model/todo_view_model.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +34,9 @@ class _TodoPageState extends State<TodoPage> {
           setState(() {});
         },
         child: FutureBuilder<List<Data>>(
-          future: viewModel.futureTodoItems,
+          future: context.watch<TodoViewModel>().futureTodoItems,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              //리스트뷰 작성
               final items = snapshot.data!;
               return ListView.builder(
                   itemCount: items.length,

@@ -5,6 +5,14 @@ import 'package:notion_api_test/util/get_status_color.dart';
 import 'package:notion_api_test/repository/data_repository.dart';
 
 class CalenderViewModel extends ChangeNotifier {
+  late Map<DateTime, List<NeatCleanCalendarEvent>> _event;
+
+  Map<DateTime, List<NeatCleanCalendarEvent>> get event => _event;
+
+  void fetch() async {
+    _event = await makeEvent();
+    notifyListeners();
+  }
 
   DateTime? _selectedDate;
 
@@ -14,7 +22,7 @@ class CalenderViewModel extends ChangeNotifier {
 
   DateTime? get selectedDate => _selectedDate;
 
-  Future<Map<DateTime, List<NeatCleanCalendarEvent>>> fetch() async {
+  Future<Map<DateTime, List<NeatCleanCalendarEvent>>> makeEvent() async {
     final _futureCalenderItems = await DataRepository().getTodoItems();
     final List<NeatCleanCalendarEvent> resultList =  _futureCalenderItems.map((e) =>
       NeatCleanCalendarEvent(e.name,
@@ -33,6 +41,7 @@ class CalenderViewModel extends ChangeNotifier {
     final Map<DateTime, List<NeatCleanCalendarEvent>> resultMap = groupBy(resultList, (NeatCleanCalendarEvent e) => e.startTime);
     resultMap.keys.map((e) => DateTime(e.year, e.month, e.day));
     _isLoaded = true;
+    notifyListeners();
     return resultMap;
   }
 
