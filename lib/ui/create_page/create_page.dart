@@ -39,7 +39,6 @@ class _CreatePageState extends State<CreatePage> {
                       viewModel.end,
                       nameController.text);
                   Navigator.pop(context);
-                  context.read<CalenderViewModel>().makeEvent();
                 },
                 icon: Icon(Icons.send))
           ],

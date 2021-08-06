@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:notion_api_test/model/failure_model.dart';
 
@@ -16,7 +14,7 @@ class DeleteRepository {
     _client.close();
   }
 
-  Future<void> deleteTodoItem(String pageId) async {
+  Future<void> deleteTodoItem(String pageId, String token) async {
     Map<String, dynamic> input = {
       "archived": true,
     };
@@ -27,7 +25,7 @@ class DeleteRepository {
       final response = await _client.patch(url,
           headers: {
             HttpHeaders.authorizationHeader:
-                'Bearer ${dotenv.env['NOTION_API_KEY']}',
+                'Bearer $token',
             HttpHeaders.connectionHeader: 'keep-alive',
             HttpHeaders.acceptEncodingHeader: 'gzip, deflate, br',
             HttpHeaders.acceptHeader: '*/*',

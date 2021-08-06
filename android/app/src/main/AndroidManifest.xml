@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notion_api_test">
+    package="com.cjh.notion_api_test">
    <application
         android:label="notion_api_test"
         android:icon="@mipmap/ic_launcher">

@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:notion_api_test/model/failure_model.dart';
 
@@ -16,10 +14,10 @@ class CreateRepository {
     _client.close();
   }
 
-  Future<void> createTodoItems(String detail, String status, String color, String startTime, String? endTime, String name) async {
+  Future<void> createTodoItems(String detail, String status, String color, String startTime, String? endTime, String name, String token, String db) async {
     Map<String, dynamic> input = {
       "parent": {
-        "database_id": "33ba8e6b-2552-4cc1-b9c3-021acfc5349c"
+        "database_id": "$db"
       },
       "properties": {
         "details": {
@@ -94,7 +92,7 @@ class CreateRepository {
       final response = await _client.post(url,
           headers: {
             HttpHeaders.authorizationHeader:
-            'Bearer ${dotenv.env['NOTION_API_KEY']}',
+            'Bearer $token',
             HttpHeaders.connectionHeader : 'keep-alive',
             HttpHeaders.acceptEncodingHeader : 'gzip, deflate, br',
             HttpHeaders.acceptHeader : '*/*',

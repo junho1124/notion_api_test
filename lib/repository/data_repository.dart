@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notion_api_test/repository/user_data_repository.dart';
 
 import '../model/failure_model.dart';
 import '../model/data_model.dart';
@@ -18,20 +19,21 @@ class DataRepository {
     _client.close();
   }
 
-  Future<List<Data>> getTodoItems() async {
+  Future<List<Data>> getTodoItems(String token, String db) async { //TODO chat 앱의 Result 오류 패턴으로 수정할것.
     try {
       final url =
-          '${_baseUrl}databases/${dotenv.env['NOTION_DATABASE_ID']}/query';
+          '${_baseUrl}databases/$db/query';
       final response = await _client.post(
         Uri.parse(url),
         headers: {
           HttpHeaders.authorizationHeader:
-              'Bearer ${dotenv.env['NOTION_API_KEY']}',
+              'Bearer $token',
           'Notion-Version': '2021-05-13'
         },
       );
 
       if (response.statusCode == 200) {
+        UserDataRepository().putUserData(token, db);
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return (data['results'] as List).map((e) => Data.fromMap(e)).toList()
           ..sort((a, b) => b.startDate.compareTo(a.startDate));

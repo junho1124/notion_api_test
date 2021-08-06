@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.dart';
-import 'package:notion_api_test/model/data_model.dart';
+import 'package:notion_api_test/repository/user_data_repository.dart';
 import 'package:notion_api_test/util/get_status_color.dart';
 import 'package:notion_api_test/repository/data_repository.dart';
 
@@ -18,12 +18,15 @@ class CalenderViewModel extends ChangeNotifier {
 
   DateTime? get selectedDate => _selectedDate;
 
-  void fetch() async {
-    await makeEvent();
+  Future<void> fetch() async {
+    final _userDataRepository = UserDataRepository();
+    String token = await _userDataRepository.getUserToken();
+    String db = await _userDataRepository.getUserDB();
+    await makeEvent(token, db);
   }
 
-  Future<void> makeEvent() async {
-    final _calenderItems = await DataRepository().getTodoItems();
+  Future<void> makeEvent(String token, String db) async {
+    final _calenderItems = await DataRepository().getTodoItems(token, db);
     final List<NeatCleanCalendarEvent> resultList =  _calenderItems.map((e) =>
       NeatCleanCalendarEvent(e.name,
           startTime: DateTime(e.startDate.year, e.startDate.month,

@@ -1,4 +1,4 @@
-package com.example.notion_api_test
+package com.cjh.notion_api_test
 
 import io.flutter.embedding.android.FlutterActivity
 

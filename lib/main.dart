@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:notion_api_test/ui/main_page/main_page.dart';
+import 'package:notion_api_test/ui/user_data_page/user_data_page.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
 import 'package:notion_api_test/view_model/create_view_model.dart';
 import 'package:notion_api_test/view_model/todo_view_model.dart';
-import 'package:notion_api_test/ui/calender_page/calender_page.dart';
+import 'package:notion_api_test/view_model/user_data_view_model.dart';
 import 'package:provider/provider.dart';
-import 'ui/todo/todo_page.dart';
 
 void main() async {
-  await dotenv.load(fileName: '.env');
   runApp(MultiProvider(
       providers: [
     ChangeNotifierProvider(create: (_) => TodoViewModel()),
     ChangeNotifierProvider(create: (_) => CalenderViewModel()),
     ChangeNotifierProvider(create: (_) => CreateViewModel()),
+    ChangeNotifierProvider(create: (_) => UserDataViewModel()),
       ],
   child: MyApp(),),
   );
@@ -33,52 +33,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
-      home: MainPage()
+      home: context.watch<UserDataViewModel>().isLogin ? MainPage() : UserDataPage()
     );
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
 
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('NotionApp'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            ListTile(
-              leading: Text('Todo'),
-              onTap: () {
-                setState(() {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => TodoPage()));
-                });
-              },
-            ),
-            ListTile(
-              leading: Text('Calender'),
-              onTap: () {
-                setState(() {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => CalenderPage(DateTime.now())));
-                });
-              },
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
-}
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:notion_api_test/repository/data_create_repository.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:notion_api_test/repository/user_data_repository.dart';
 
 
 class CreateViewModel extends ChangeNotifier {
@@ -55,6 +56,9 @@ class CreateViewModel extends ChangeNotifier {
   }
 
   void upload(String detail, String status, String color, DateTime startTime, DateTime? endTime, String name) async {
+    final _userDataRepository = UserDataRepository();
+    String token = await _userDataRepository.getUserToken();
+    String db = await _userDataRepository.getUserDB();
     String start = DateFormat("yyyy-MM-dd").format(startTime);
     String? end;
     if(endTime != null) {
@@ -62,7 +66,7 @@ class CreateViewModel extends ChangeNotifier {
     } else {
       end = null;
     }
-    await CreateRepository().createTodoItems(detail, status, color, start, end, name);
+    await CreateRepository().createTodoItems(detail, status, color, start, end, name, token, db);
     notifyListeners();
   }
 

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart'
     as Cal;
-import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.dart';
-import 'package:notion_api_test/model/failure_model.dart';
 import 'package:notion_api_test/ui/create_page/create_page.dart';
-import 'package:notion_api_test/ui/todo/todo_page.dart';
+import 'package:notion_api_test/ui/todo_page/todo_page.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -30,9 +28,7 @@ class _CalenderPageState extends State<CalenderPage> {
 
     return Scaffold(
         body: RefreshIndicator(
-            onRefresh: () async {
-              await viewModel.makeEvent();
-            },
+            onRefresh: () => viewModel.fetch(),
             child: SafeArea(
                 child: !viewModel.isLoaded
                     ? Center(
