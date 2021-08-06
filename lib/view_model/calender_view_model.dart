@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/neat_and_clean_calendar_event.dart';
+import 'package:notion_api_test/model/data_model.dart';
 import 'package:notion_api_test/util/get_status_color.dart';
 import 'package:notion_api_test/repository/data_repository.dart';
 
@@ -8,11 +9,6 @@ class CalenderViewModel extends ChangeNotifier {
   late Map<DateTime, List<NeatCleanCalendarEvent>> _event;
 
   Map<DateTime, List<NeatCleanCalendarEvent>> get event => _event;
-
-  void fetch() async {
-    _event = await makeEvent();
-    notifyListeners();
-  }
 
   DateTime? _selectedDate;
 
@@ -22,9 +18,13 @@ class CalenderViewModel extends ChangeNotifier {
 
   DateTime? get selectedDate => _selectedDate;
 
-  Future<Map<DateTime, List<NeatCleanCalendarEvent>>> makeEvent() async {
-    final _futureCalenderItems = await DataRepository().getTodoItems();
-    final List<NeatCleanCalendarEvent> resultList =  _futureCalenderItems.map((e) =>
+  void fetch() async {
+    await makeEvent();
+  }
+
+  Future<void> makeEvent() async {
+    final _calenderItems = await DataRepository().getTodoItems();
+    final List<NeatCleanCalendarEvent> resultList =  _calenderItems.map((e) =>
       NeatCleanCalendarEvent(e.name,
           startTime: DateTime(e.startDate.year, e.startDate.month,
               e.startDate.day, e.startDate.hour, e.startDate.minute),
@@ -37,12 +37,12 @@ class CalenderViewModel extends ChangeNotifier {
       if (resultList[i].description == 'any') {
         resultList.removeAt(i);
       }
+      notifyListeners();
     }
-    final Map<DateTime, List<NeatCleanCalendarEvent>> resultMap = groupBy(resultList, (NeatCleanCalendarEvent e) => e.startTime);
-    resultMap.keys.map((e) => DateTime(e.year, e.month, e.day));
+    _event = groupBy(resultList, (NeatCleanCalendarEvent e) => e.startTime);
+    _event.keys.map((e) => DateTime(e.year, e.month, e.day));
     _isLoaded = true;
     notifyListeners();
-    return resultMap;
   }
 
   bool _isTabbed = true;

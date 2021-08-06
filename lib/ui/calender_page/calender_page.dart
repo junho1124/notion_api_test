@@ -18,14 +18,10 @@ class CalenderPage extends StatefulWidget {
 }
 
 class _CalenderPageState extends State<CalenderPage> {
-
-
   @override
   void initState() {
     super.initState();
-    final viewModel = context.read<CalenderViewModel>();
-    viewModel.fetch();
-    viewModel.makeEvent().whenComplete(() => setState(() {}));
+    context.read<CalenderViewModel>().fetch();
   }
 
   @override
@@ -33,62 +29,49 @@ class _CalenderPageState extends State<CalenderPage> {
     final viewModel = context.read<CalenderViewModel>();
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          viewModel.fetch();
-          setState(() {});
-        },
-        child: SafeArea(
-            child: !viewModel.isLoaded
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : FutureBuilder<Map<DateTime, List<NeatCleanCalendarEvent>>>(
-                    future: context.watch<CalenderViewModel>().makeEvent(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Cal.Calendar(
-                          startOnMonday: true,
-                          initialDate: widget.startDate,
-                          weekDays: ['월', '화', '수', '목', '금', '토', '일'],
-                          events: snapshot.data,
-                          isExpandable: true,
-                          eventDoneColor: Colors.green,
-                          selectedColor: Colors.pink,
-                          todayColor: Colors.blue,
-                          eventColor: Colors.grey,
-                          locale: 'de_DE',
-                          todayButtonText: 'Today',
-                          isExpanded: true,
-                          expandableDateFormat: 'yyyy년 MM월 dd일',
-                          dayOfWeekStyle: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 11),
-                          onEventSelected: (e) {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => TodoPage()));
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        //에러 메세지 발생
-                        final failure = snapshot.error as Failure;
-                        return Center(
-                          child: Text(failure.message),
-                        );
-                      }
-                      return const Center(
+        body: RefreshIndicator(
+            onRefresh: () async {
+              await viewModel.makeEvent();
+            },
+            child: SafeArea(
+                child: !viewModel.isLoaded
+                    ? Center(
                         child: CircularProgressIndicator(),
-                      );
-                    },
-                  )),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => CreatePage())).whenComplete(() => viewModel.fetch());
-        },
-        child: Icon(Icons.add),
-      ),
-    );
+                      )
+                    : Cal.Calendar(
+                        startOnMonday: true,
+                        initialDate: widget.startDate,
+                        weekDays: ['월', '화', '수', '목', '금', '토', '일'],
+                        events: viewModel.event,
+                        isExpandable: true,
+                        eventDoneColor: Colors.green,
+                        selectedColor: Colors.pink,
+                        todayColor: Colors.blue,
+                        eventColor: Colors.grey,
+                        locale: 'de_DE',
+                        todayButtonText: 'Today',
+                        isExpanded: true,
+                        expandableDateFormat: 'yyyy년 MM월 dd일',
+                        dayOfWeekStyle: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 11),
+                        onEventSelected: (e) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      TodoPage()));
+                        },
+                      ))),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CreatePage()));
+          },
+          child: Icon(Icons.add),
+        ));
   }
 }

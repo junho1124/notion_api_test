@@ -32,50 +32,41 @@ class _MakeTodoCardState extends State<MakeTodoCard> {
         ),
         boxShadow: const [
           BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 6.0)
+              color: Colors.black26, offset: Offset(0, 2), blurRadius: 6.0)
         ],
       ),
       child: ListTile(
         onTap: () async {
           await showDialog(
-              context: context,
-            builder: (_) {
-                    return AlertDialog(
-                      title: Text('Todo 삭제'),
-                      content: Text('이 할일을 삭제 하시겠습니까?'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text('취소')),
-                        TextButton(
-                            onPressed: () {
-                                viewModel.delete(widget.item.pageID);
-                                Navigator.pop(context);
-                            },
-                            child: Text('삭제'))
-                      ],
-                    );
-                  });
-          context.read<TodoViewModel>().fetch();
-          setState(() {});
+                context: context,
+                builder: (_) {
+                  return AlertDialog(
+                    title: Text('Todo 삭제'),
+                    content: Text('이 할일을 삭제 하시겠습니까?'),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('취소')),
+                      TextButton(
+                          onPressed: () {
+                            viewModel.delete(widget.item.pageID);
+                            Navigator.pop(context);
+                          },
+                          child: Text('삭제'))
+                    ],
+                  );
+                });
+            context.read<TodoViewModel>().fetch();
         },
         title: Text(widget.item.name),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-                '${widget.item.status}'
-            ),
-            Text(
-                'Start • ${DateFormat.yMEd().format(widget.item.startDate)}'
-            ),
-            Text(
-                'End • ${DateFormat.yMEd().format(widget.item.endDate)}'
-            ),
+            Text('${widget.item.status}'),
+            Text('Start • ${DateFormat.yMEd().format(widget.item.startDate)}'),
+            Text('End • ${DateFormat.yMEd().format(widget.item.endDate)}'),
           ],
         ),
         trailing: Text(widget.item.details),
@@ -83,4 +74,3 @@ class _MakeTodoCardState extends State<MakeTodoCard> {
     );
   }
 }
-
