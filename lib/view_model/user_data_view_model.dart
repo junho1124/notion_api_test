@@ -9,17 +9,18 @@ class UserDataViewModel extends ChangeNotifier {
   bool get isLogin => _isLogin;
 
   void login() async {
-    if(await repository.getUserDB() != '') {
-      _isLogin = true;
-      notifyListeners();
-    }
-    return;
+      await repository.prefs.then((value) {
+        _isLogin = value.getBool('isLogin') ?? false;
+        notifyListeners();
+      });
   }
 
-  void logOut() {
+  void logOut() async {
     repository.clearUserData();
-    _isLogin = false;
-    notifyListeners();
+    await repository.prefs.then((value) {
+      _isLogin = value.getBool('isLogin') ?? false;
+      notifyListeners();
+    });
   }
 
 }

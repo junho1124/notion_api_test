@@ -2,7 +2,7 @@
 abstract class Result<T> {
   factory Result.success(T data) = Success;
 
-  factory Result.error(Exception e) = Error;
+  factory Result.error(String e) = Error;
 }
 
 class Success<T> implements Result<T> {
@@ -12,7 +12,7 @@ class Success<T> implements Result<T> {
 }
 
 class Error<T> implements Result<T> {
-  final Exception e;
+  final String e;
 
   Error(this.e);
 }

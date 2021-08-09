@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:notion_api_test/model/failure_model.dart';
+import 'package:notion_api_test/model/result.dart';
 
 class DeleteRepository {
   static const String _baseUrl = 'https://api.notion.com/v1/';
@@ -36,11 +36,11 @@ class DeleteRepository {
       if (response.statusCode == 200) {
         print('삭제 완료');
       } else {
-        throw const Failure(message: '삭제 오류');
+        throw Result.error('오류');
       }
     } catch (_) {
       print('err 4');
-      throw const Failure(message: '삭제 오류!!');
+      throw Result.error('오류');
     }
   }
 }

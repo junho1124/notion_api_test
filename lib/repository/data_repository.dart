@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:notion_api_test/model/result.dart';
 import 'package:notion_api_test/repository/user_data_repository.dart';
 
-import '../model/failure_model.dart';
 import '../model/data_model.dart';
 
 class DataRepository {
@@ -19,7 +18,7 @@ class DataRepository {
     _client.close();
   }
 
-  Future<List<Data>> getTodoItems(String token, String db) async { //TODO chat 앱의 Result 오류 패턴으로 수정할것.
+  Future<Result<List<Data>>> getTodoItems(String token, String db) async {
     try {
       final url =
           '${_baseUrl}databases/$db/query';
@@ -35,13 +34,13 @@ class DataRepository {
       if (response.statusCode == 200) {
         UserDataRepository().putUserData(token, db);
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        return (data['results'] as List).map((e) => Data.fromMap(e)).toList()
-          ..sort((a, b) => b.startDate.compareTo(a.startDate));
+        return Result.success((data['results'] as List).map((e) => Data.fromMap(e)).toList()
+          ..sort((a, b) => b.startDate.compareTo(a.startDate)));
       } else {
-        throw const Failure(message: '데이터 전송 오류');
+        throw Result.error('입력값 오류');
       }
     } catch (_) {
-      throw const Failure(message: '데이터 전송 오류');
+      throw Result.error('입력 값 오류');
     }
   }
 

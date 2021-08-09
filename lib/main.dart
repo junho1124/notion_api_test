@@ -20,20 +20,29 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+    context.read<UserDataViewModel>().login();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Notion Demo',
+      title: 'Flutter Notion',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
-      home: context.watch<UserDataViewModel>().isLogin ? MainPage() : UserDataPage()
+      home: context.watch<UserDataViewModel>().isLogin
+          ? MainPage() : UserDataPage()
     );
   }
 }

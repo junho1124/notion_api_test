@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notion_api_test/repository/data_repository.dart';
+import 'package:notion_api_test/model/result.dart';
 import 'package:notion_api_test/view_model/calender_view_model.dart';
 import 'package:notion_api_test/view_model/user_data_view_model.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +12,14 @@ class UserDataPage extends StatefulWidget {
 }
 
 class _UserDataPageState extends State<UserDataPage> {
-
   final _tokenController = TextEditingController();
   final _databaseController = TextEditingController();
+
+  @override
+  void initState() {
+    context.read<UserDataViewModel>();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -25,7 +30,7 @@ class _UserDataPageState extends State<UserDataPage> {
 
   @override
   Widget build(BuildContext context) {
-  final viewModel = context.read<UserDataViewModel>();
+    final viewModel = context.read<UserDataViewModel>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -55,12 +60,35 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TextButton(
               onPressed: () {
-                context.read<CalenderViewModel>().makeEvent(_tokenController.text, _databaseController.text)
-                .whenComplete(() => viewModel.login());
+                context
+                    .read<CalenderViewModel>()
+                    .makeEvent(_tokenController.text, _databaseController.text)
+                    .then((value) {
+                  if (value is Error) {
+                    showAlertDialog(context, value.e);
+                  } else {
+                    viewModel.login();
+                  }
+                });
               },
               child: Text('다음'))
         ],
       ),
     );
+  }
+
+  Future<dynamic> showAlertDialog(BuildContext context , String error) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(error),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('확인'))
+              ],
+            ));
   }
 }
